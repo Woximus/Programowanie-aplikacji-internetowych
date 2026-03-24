@@ -1,0 +1,38 @@
+{extends file="../templates/main.html"}
+{block name=content}
+<h2 class="major">Kalkulator Kredytowy</h2>
+<form action="{$app_url}/app/calc.php" method="POST">
+    <div class="fields">
+        <div class="field">
+            <label for="kwota">Kwota kredytu:</label>
+            <input type="text" name="kwota" id="kwota" value="{$form['kwota']}">
+        </div>
+        <div class="field">
+            <label for="lata">Okres (lata):</label>
+            <input type="text" name="lata" id="lata" value="{$form['lata']}">
+        </div>
+        <div class="field">
+            <label for="oprocentowanie">Oprocentowanie (%):</label>
+            <input type="text" name="oprocentowanie" id="oprocentowanie" value="{$form['oprocentowanie']}">
+        </div>
+    </div>
+    <ul class="actions">
+        <li><button type="submit" class="button primary">Oblicz ratę</button></li>
+    </ul>
+</form>
+<div class="messages">
+    {if isset($messages) && count($messages) > 0}
+        <ul style="color: #ffaaaa;">
+        {foreach $messages as $msg}
+            <li>{$msg}</li>
+        {/foreach}
+        </ul>
+    {/if}
+{if isset($result['rata'])}
+        <p style="color: #aaffaa; font-weight: bold; font-size: 1.1em;">
+            Miesięczna rata: {$result['rata']|number_format:2:',':' '} PLN<br>
+            Suma do spłaty: {$result['calkowita']|number_format:2:',':' '} PLN
+        </p>
+    {/if}
+</div>
+{/block}
