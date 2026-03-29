@@ -1,0 +1,27 @@
+<div class="card">
+    <h2>Kalkulator</h2>
+    
+    <div>
+        <label>Kwota kredytu:</label>
+        <input type="text" [(ngModel)]="kwota"><br>
+
+        <label>Okres (lata):</label>
+        <input type="text" [(ngModel)]="lata"> <br>
+
+        <label>Oprocentowanie (%):</label>
+        <input type="text" [(ngModel)]="procent"> <br>
+
+        <button class="btn-calc" (click)="oblicz()">Oblicz ratę</button>
+    </div>
+
+    <div class="error" *ngIf="errors.length > 0">
+        <ul>
+            <li *ngFor="let err of errors">{{ err }}</li>
+        </ul>
+    </div>
+
+    <div class="result" *ngIf="wynik !== null && errors.length === 0">
+        Miesięczna rata: {{ wynik | number:'1.2-2' }} PLN<br>
+        Suma do spłaty: {{ calkowitaKwota | number:'1.2-2' }} PLN
+    </div>
+</div>
