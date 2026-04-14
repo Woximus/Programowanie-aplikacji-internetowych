@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms';
+//Narzedzia
+import { Component } from '@angular/core'; //Widok
+import { CommonModule } from '@angular/common';  // Instrukcje
+import { FormsModule } from '@angular/forms'; //Formularz
 
+//role
 type Role = 'admin' | 'user' | 'guest' | null;
 
+// glowny app-root ma uzywac app.html i app.css
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -11,10 +14,11 @@ type Role = 'admin' | 'user' | 'guest' | null;
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
+// pojemniki na dane
 export class App {
-  // Stan logowania
   isLoggedIn = false;
   currentRole: Role = null;
+  // co sie wpisze 
   loginInput = '';
   passInput = '';
 
@@ -32,7 +36,7 @@ export class App {
     if (this.loginInput === 'manager' && this.passInput === 'admin123') {
       this.isLoggedIn = true;
       this.currentRole = 'admin';
-    } else if (this.loginInput === 'kowalski' && this.passInput === 'user123') {
+    } else if (this.loginInput === 'uzytkownik' && this.passInput === 'user123') {
       this.isLoggedIn = true;
       this.currentRole = 'user';
     } else if (this.loginInput === 'gosc' && this.passInput === 'gosc123') {
@@ -43,6 +47,7 @@ export class App {
     }
   }
 
+  //Wylogowanie
   logout() {
     this.isLoggedIn = false;
     this.currentRole = null;
@@ -61,15 +66,18 @@ export class App {
     this.wynik = null;
     this.calkowitaKwota = null;
 
+    //jesli nie zalogowany lub gosc
     if (!this.isLoggedIn || this.currentRole === 'guest') {
       this.errors.push("Błąd: Brak uprawnień do obliczeń.");
       return;
     }
 
+    //zamienia , na .
     const S = Number(this.kwota.replace(',', '.'));
     const L = Number(this.lata.replace(',', '.'));
     const p = Number(this.procent.replace(',', '.'));
 
+    // czy nie puste, numer , czy nie na minusie
     if (!this.kwota || isNaN(S) || S <= 0) this.errors.push("Kwota musi być liczbą dodatnią.");
     if (!this.lata || isNaN(L) || L <= 0 || !Number.isInteger(L)) this.errors.push("Lata muszą być pełną liczbą dodatnią.");
     if (!this.procent || isNaN(p) || p < 0) this.errors.push("Oprocentowanie nie może być ujemne.");
@@ -78,6 +86,7 @@ export class App {
       this.errors.push("Odmowa dostępu: Jako Użytkownik nie możesz przekroczyć 5%!");
     }
 
+    //jesli nie ma bledu
     if (this.errors.length === 0) {
       const n = L * 12; 
       const r = (p / 100) / 12; 

@@ -1,17 +1,19 @@
 <div class="card">
   
+    <!--Gdy nie jest zalogowany, sprawdza dostep -->
   <div *ngIf="!isLoggedIn">
     <h2 style="text-align: center;">Dostęp do systemu</h2>
     <input type="text" [(ngModel)]="loginInput" placeholder="Wpisz login">
     <input type="password" [(ngModel)]="passInput" placeholder="Wpisz hasło">
     <button (click)="login()">Zaloguj się</button>
     <p style="font-size: 11px; color: gray; text-align: center; margin-top: 15px;">
-      Konta: manager/admin123 | kowalski/user123 | gosc/gosc123
+      Konta: manager/admin123 | uzytkownik/user123 | gosc/gosc123
     </p>
   </div>
 
+  <!--Gdy przepuscilo, dynamicznie daje klase -->
   <div *ngIf="isLoggedIn" class="fade-in">
-    
+    <!--dynamicznie daje klase, wyciaga z ts i zmienia na duza litere -->
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <span class="role-badge" [ngClass]="{
         'role-admin': currentRole === 'admin',
