@@ -1,42 +1,58 @@
+/* Główne style okienka */
 .card {
-    border: 1px solid #ccc;
-    padding: 20px;
-    width: 300px;
-    border-radius: 8px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 350px;
+    margin: 40px auto;
     font-family: Arial, sans-serif;
-    margin: 50px auto; 
 }
 
-input[type=text] {
-    margin-bottom: 10px;
-    display: block;
-    width: 90%;
-    padding: 5px;
-}
-
-label {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.error {
-    color: red;
-    margin-top: 10px;
-}
-
-.error ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.result {
-    margin-top: 10px;
+/* Pola tekstowe i przyciski */
+input {
+    width: 100%;
     padding: 10px;
-    background-color: #e7f3ff;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 button {
-    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
     cursor: pointer;
-    padding: 8px 15px;
+    width: 100%;
+    font-weight: bold;
+    transition: 0.3s;
 }
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* --- ANIMACJE I BADGE --- */
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.role-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Kolory ról */
+.role-admin { background: #ffd700; color: #000; }
+.role-user { background: #add8e6; color: #000; }
+.role-guest { background: #ffcccb; color: #000; }

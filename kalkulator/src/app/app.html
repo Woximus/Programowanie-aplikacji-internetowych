@@ -1,27 +1,58 @@
 <div class="card">
-    <h2>Kalkulator</h2>
+  
+  <div *ngIf="!isLoggedIn">
+    <h2 style="text-align: center;">Dostęp do systemu</h2>
+    <input type="text" [(ngModel)]="loginInput" placeholder="Wpisz login">
+    <input type="password" [(ngModel)]="passInput" placeholder="Wpisz hasło">
+    <button (click)="login()">Zaloguj się</button>
+    <p style="font-size: 11px; color: gray; text-align: center; margin-top: 15px;">
+      Konta: manager/admin123 | kowalski/user123 | gosc/gosc123
+    </p>
+  </div>
+
+  <div *ngIf="isLoggedIn" class="fade-in">
     
-    <div>
-        <label>Kwota kredytu:</label>
-        <input type="text" [(ngModel)]="kwota"><br>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="role-badge" [ngClass]="{
+        'role-admin': currentRole === 'admin',
+        'role-user': currentRole === 'user',
+        'role-guest': currentRole === 'guest'
+      }">Rola: {{ currentRole | uppercase }}</span>
+      <button (click)="logout()" style="padding: 4px 10px; font-size: 12px; background: #ff4c4c; width: auto;">Wyloguj</button>
+    </div>
+    
+    <hr style="margin: 15px 0;">
 
-        <label>Okres (lata):</label>
-        <input type="text" [(ngModel)]="lata"> <br>
-
-        <label>Oprocentowanie (%):</label>
-        <input type="text" [(ngModel)]="procent"> <br>
-
-        <button class="btn-calc" (click)="oblicz()">Oblicz ratę</button>
+    <div *ngIf="currentRole === 'guest'" style="text-align: center; margin: 20px 0;">
+      <p style="color: red; font-weight: bold;">Konto Gościa ma zablokowany dostęp do systemu obliczeniowego.</p>
+      <p style="font-size: 13px;">Zaloguj się jako Użytkownik lub Menadżer, aby uzyskać dostęp.</p>
     </div>
 
-    <div class="error" *ngIf="errors.length > 0">
-        <ul>
-            <li *ngFor="let err of errors">{{ err }}</li>
-        </ul>
+    <div *ngIf="currentRole !== 'guest'">
+      <h3 style="margin-top: 0;">Kalkulator Kredytowy</h3>
+      
+      <label>Kwota kredytu (PLN):</label>
+      <input type="text" [(ngModel)]="kwota" placeholder="np. 150000">
+
+      <label>Okres (Lata):</label>
+      <input type="text" [(ngModel)]="lata" placeholder="np. 10">
+
+      <label>Oprocentowanie (%):</label>
+      <input type="text" [(ngModel)]="procent" [placeholder]="currentRole === 'user' ? 'Maksymalnie 5%' : 'Brak limitów (Admin)'">
+
+      <button (click)="oblicz()" style="margin-top: 10px;">Oblicz ratę</button>
     </div>
 
-    <div class="result" *ngIf="wynik !== null && errors.length === 0">
-        Miesięczna rata: {{ wynik | number:'1.2-2' }} PLN<br>
-        Suma do spłaty: {{ calkowitaKwota | number:'1.2-2' }} PLN
+    <div *ngIf="errors.length > 0" style="color: red; margin-top: 15px; font-size: 14px;">
+      <ul style="margin: 0; padding-left: 20px;">
+        <li *ngFor="let err of errors">{{ err }}</li>
+      </ul>
     </div>
+
+    <div *ngIf="wynik !== null" style="margin-top: 15px; padding: 10px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px;">
+      <p style="margin: 0; font-size: 18px;">Rata: <b>{{ wynik | number:'1.2-2' }} PLN</b></p>
+      <p style="margin: 5px 0 0 0; font-size: 12px; color: #555;">Całkowita kwota do spłaty: {{ calkowitaKwota | number:'1.2-2' }} PLN</p>
+    </div>
+
+  </div>
 </div>

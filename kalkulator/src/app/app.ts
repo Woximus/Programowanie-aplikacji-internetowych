@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
 
+type Role = 'admin' | 'user' | 'guest' | null;
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -10,40 +12,80 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './app.css'
 })
 export class App {
+  // Stan logowania
+  isLoggedIn = false;
+  currentRole: Role = null;
+  loginInput = '';
+  passInput = '';
+
+  // Pola kalkulatora
   kwota: string = '';
   lata: string = '';
   procent: string = '';
 
+  // Wyniki
   errors: string[] = []; 
   wynik: number | null = null;
   calkowitaKwota: number | null = null;
+
+  login() {
+    if (this.loginInput === 'manager' && this.passInput === 'admin123') {
+      this.isLoggedIn = true;
+      this.currentRole = 'admin';
+    } else if (this.loginInput === 'kowalski' && this.passInput === 'user123') {
+      this.isLoggedIn = true;
+      this.currentRole = 'user';
+    } else if (this.loginInput === 'gosc' && this.passInput === 'gosc123') {
+      this.isLoggedIn = true;
+      this.currentRole = 'guest';
+    } else {
+      alert("Błędne dane logowania!");
+    }
+  }
+
+  logout() {
+    this.isLoggedIn = false;
+    this.currentRole = null;
+    this.wynik = null;
+    this.calkowitaKwota = null;
+    this.errors = [];
+    this.kwota = '';
+    this.lata = '';
+    this.procent = '';
+    this.loginInput = '';
+    this.passInput = '';
+  }
 
   oblicz() {
     this.errors = [];
     this.wynik = null;
     this.calkowitaKwota = null;
 
-    if (!this.kwota) this.errors.push("Pole 'Kwota' nie może być puste !!!");
-    else if (isNaN(Number(this.kwota))) this.errors.push("W polu 'Kwota' musi być liczba !!!");
-    else if (Number(this.kwota) <= 0) this.errors.push("Kwota nie moze byc ujemna !!!");
+    if (!this.isLoggedIn || this.currentRole === 'guest') {
+      this.errors.push("Błąd: Brak uprawnień do obliczeń.");
+      return;
+    }
 
-    if (!this.lata) this.errors.push("Pole 'Lata' nie może być puste !!!");
-    else if (isNaN(Number(this.lata))) this.errors.push("W polu 'Lata' musi być liczba !!!");
-    else if (Number(this.lata) <= 0) this.errors.push("Liczba lat nie moze byc ujemna !!!");
+    const S = Number(this.kwota.replace(',', '.'));
+    const L = Number(this.lata.replace(',', '.'));
+    const p = Number(this.procent.replace(',', '.'));
 
-    if (!this.procent) this.errors.push("Pole 'Oprocentowanie' nie może być puste !!!");
-    else if (isNaN(Number(this.procent))) this.errors.push("W polu 'Oprocentowanie' musi być liczba !!!");
-    else if (Number(this.procent) < 0) this.errors.push("Oprocentowanie nie może być ujemne !!!");
+    if (!this.kwota || isNaN(S) || S <= 0) this.errors.push("Kwota musi być liczbą dodatnią.");
+    if (!this.lata || isNaN(L) || L <= 0 || !Number.isInteger(L)) this.errors.push("Lata muszą być pełną liczbą dodatnią.");
+    if (!this.procent || isNaN(p) || p < 0) this.errors.push("Oprocentowanie nie może być ujemne.");
+
+    if (this.currentRole === 'user' && p > 5) {
+      this.errors.push("Odmowa dostępu: Jako Użytkownik nie możesz przekroczyć 5%!");
+    }
 
     if (this.errors.length === 0) {
-      const S = parseFloat(this.kwota);
-      const n = parseInt(this.lata) * 12;
-      const r = parseFloat(this.procent) / 100 / 12;
+      const n = L * 12; 
+      const r = (p / 100) / 12; 
 
       if (r > 0) {
         this.wynik = (S * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
       } else {
-        this.wynik = S / n;
+        this.wynik = S / n; 
       }
       this.calkowitaKwota = this.wynik * n;
     }
