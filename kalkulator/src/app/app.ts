@@ -6,6 +6,14 @@ import { FormsModule } from '@angular/forms'; //Formularz
 //role
 type Role = 'admin' | 'user' | 'guest' | null;
 
+// Struktura Tabeli
+interface User {
+  id: number;
+  login: string;
+  haslo: string;
+  rola: Role;
+}
+
 // glowny app-root ma uzywac app.html i app.css
 @Component({
   selector: 'app-root',
@@ -16,6 +24,15 @@ type Role = 'admin' | 'user' | 'guest' | null;
 })
 // pojemniki na dane
 export class App {
+  // Tabela uzytkownikow
+  usersDB: User[] = [
+    { id: 1, login: 'manager', haslo: 'admin123', rola: 'admin' },
+    { id: 2, login: 'uzytkownik', haslo: 'user123', rola: 'user' },
+    { id: 3, login: 'nowak', haslo: 'user123', rola: 'user' },
+    { id: 4, login: 'krawczyk', haslo: 'user123', rola: 'user' },
+    { id: 5, login: 'gosc', haslo: 'gosc123', rola: 'guest' }
+  ];
+
   isLoggedIn = false;
   currentRole: Role = null;
   // co sie wpisze 
@@ -27,23 +44,57 @@ export class App {
   lata: string = '';
   procent: string = '';
 
+  filterText: string = '';
+
+  //Zmiene do edycji
+  editingUserId: number | null = null;
+  editFormData: any = {}; // Tymczasowa zmienna 
+
   // Wyniki
   errors: string[] = []; 
   wynik: number | null = null;
   calkowitaKwota: number | null = null;
 
+  usunUzytkownika(id: number) {
+    // Okienko z potwierdzeniem
+    if (confirm("Czy na pewno chcesz usunąć tego użytkownika z bazy?")) {
+      // Cala baza bez tego uzytkownika
+      this.usersDB = this.usersDB.filter(u => u.id !== id);
+    }
+  }
+  edytujUzytkownika(user: User) {
+    this.editingUserId = user.id;
+    // Dane uzytkownika kopia
+    this.editFormData = { ...user };
+  }
+
+  zapiszEdycje() {
+    // Pozycja tego uzytkownika
+    const index = this.usersDB.findIndex(u => u.id === this.editingUserId);
+    if (index !== -1) {
+      // stare -> nowe
+      this.usersDB[index] = { ...this.editFormData };
+    }
+    // Koniec trybu
+    this.editingUserId = null;
+  }
+
+  anulujEdycje() {
+    this.editingUserId = null;
+  }
+
+
   login() {
-    if (this.loginInput === 'manager' && this.passInput === 'admin123') {
+    // Szukam użytkownika w bazie, który ma podany login i hasło
+    const foundUser = this.usersDB.find(
+      u => u.login === this.loginInput && u.haslo === this.passInput
+    );
+
+    if (foundUser) {
       this.isLoggedIn = true;
-      this.currentRole = 'admin';
-    } else if (this.loginInput === 'uzytkownik' && this.passInput === 'user123') {
-      this.isLoggedIn = true;
-      this.currentRole = 'user';
-    } else if (this.loginInput === 'gosc' && this.passInput === 'gosc123') {
-      this.isLoggedIn = true;
-      this.currentRole = 'guest';
+      this.currentRole = foundUser.rola;
     } else {
-      alert("Błędne dane logowania!");
+      alert("Błędne dane logowania! Nie znaleziono w bazie.");
     }
   }
 
@@ -59,6 +110,21 @@ export class App {
     this.procent = '';
     this.loginInput = '';
     this.passInput = '';
+    this.filterText = ''; // Czyszczenie filtru
+  }
+
+  // Filtrowanie
+  get filteredUsers(): User[] {
+    if (!this.filterText) {
+      return this.usersDB; // Jesli nic 
+    }
+    // Zamieniam na małe litery(Ignoruje tak wielkosc liter)
+    const filterLower = this.filterText.toLowerCase();
+    
+    return this.usersDB.filter(u => 
+      u.login.toLowerCase().includes(filterLower) || 
+      (u.rola && u.rola.toLowerCase().includes(filterLower))
+    );
   }
 
   oblicz() {

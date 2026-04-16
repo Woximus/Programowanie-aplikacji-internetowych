@@ -56,3 +56,78 @@ button:hover {
 .role-admin { background: #ffd700; color: #000; }
 .role-user { background: #add8e6; color: #000; }
 .role-guest { background: #ffcccb; color: #000; }
+
+/* --- STYLE BAZY DANYCH I TABELI --- */
+.admin-panel {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 2px dashed #ccc;
+}
+
+.admin-panel h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.filter-input {
+  background-color: #f8f9fa;
+  border: 1px solid #007bff;
+}
+
+.filter-input:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.db-table th, .db-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.db-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.db-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-sm {
+  padding: 5px 8px;
+  margin: 2px;
+  font-size: 11px;
+  border-radius: 4px;
+  width: auto;
+  display: inline-block;
+  color: white;
+}
+
+.btn-edit { background-color: #f39c12; }
+.btn-edit:hover { background-color: #d68910; }
+
+.btn-delete { background-color: #e74c3c; }
+.btn-delete:hover { background-color: #c0392b; }
+
+.btn-save { background-color: #27ae60; }
+.btn-save:hover { background-color: #2ecc71; }
+
+.btn-cancel { background-color: #95a5a6; }
+.btn-cancel:hover { background-color: #7f8c8d; }
+
+.edit-input {
+  padding: 4px;
+  font-size: 11px;
+  width: 90%;
+  margin: 0;
+  border: 1px solid #3498db;
+}

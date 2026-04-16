@@ -7,7 +7,7 @@
     <input type="password" [(ngModel)]="passInput" placeholder="Wpisz hasło">
     <button (click)="login()">Zaloguj się</button>
     <p style="font-size: 11px; color: gray; text-align: center; margin-top: 15px;">
-      Konta: manager/admin123 | uzytkownik/user123 | gosc/gosc123
+      Konta z bazy: manager/admin123 | uzytkownik/user123 | gosc/gosc123
     </p>
   </div>
 
@@ -54,6 +54,57 @@
     <div *ngIf="wynik !== null" style="margin-top: 15px; padding: 10px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px;">
       <p style="margin: 0; font-size: 18px;">Rata: <b>{{ wynik | number:'1.2-2' }} PLN</b></p>
       <p style="margin: 5px 0 0 0; font-size: 12px; color: #555;">Całkowita kwota do spłaty: {{ calkowitaKwota | number:'1.2-2' }} PLN</p>
+
+  <div *ngIf="currentRole === 'admin'" class="admin-panel fade-in">
+        <h3>Baza Danych (Użytkownicy)</h3>
+        
+        <label style="font-size: 12px; font-weight: bold;">Filtruj bazę (Login / Rola):</label>
+        <input type="text" [(ngModel)]="filterText" placeholder="Wpisz np. 'user' albo 'uzytkownik'..." class="filter-input">
+        
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Login</th>
+              <th>Hasło</th>
+              <th>Rola</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of filteredUsers">
+            
+            <ng-container *ngIf="editingUserId !== u.id">
+              <td>{{ u.id }}</td>
+              <td><b>{{ u.login }}</b></td>
+              <td style="color: gray;">***</td>
+              <td><span class="role-badge" [ngClass]="'role-' + u.rola">{{ u.rola }}</span></td>
+              <td>
+                <button class="btn-sm btn-edit" (click)="edytujUzytkownika(u)">Edytuj</button>
+                <button class="btn-sm btn-delete" (click)="usunUzytkownika(u.id)">Usuń</button>
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="editingUserId === u.id">
+              <td>{{ u.id }}</td>
+              <td><input type="text" [(ngModel)]="editFormData.login" class="edit-input"></td>
+              <td><input type="text" [(ngModel)]="editFormData.haslo" class="edit-input" placeholder="Nowe hasło"></td>
+              <td>
+                <select [(ngModel)]="editFormData.rola" class="edit-input">
+                  <option value="admin">admin</option>
+                  <option value="user">user</option>
+                  <option value="guest">guest</option>
+                </select>
+              </td>
+              <td>
+                <button class="btn-sm btn-save" (click)="zapiszEdycje()">Zapisz</button>
+                <button class="btn-sm btn-cancel" (click)="anulujEdycje()">Anuluj</button>
+              </td>
+            </ng-container>
+
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="filteredUsers.length === 0" style="font-size: 12px; text-align: center; color: red;">Nie znaleziono pasujących rekordów w bazie.</p>
     </div>
 
   </div>
